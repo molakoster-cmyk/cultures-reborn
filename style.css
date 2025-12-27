@@ -1,0 +1,35 @@
+body {
+  background: #0f172a;
+  color: #e5e7eb;
+  font-family: serif;
+  padding: 20px;
+}
+
+#game {
+  max-width: 600px;
+  margin: auto;
+  background: #020617;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+button {
+  background: #334155;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+}
+
+button:hover {
+  background: #475569;
+}
+
+#log {
+  margin-top: 20px;
+  font-size: 14px;
+  background: #020617;
+  padding: 10px;
+  border-radius: 5px;
+}
