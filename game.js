@@ -6,6 +6,8 @@ let player = {
   defense: 8
 };
 
+let currentEnemy = null;
+
 function updateUI() {
   document.getElementById("charName").textContent = player.name;
   document.getElementById("health").textContent = player.health;
