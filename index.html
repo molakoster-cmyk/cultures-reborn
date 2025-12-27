@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cultures: Reborn</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="game">
+  <h1>Mountain Folk Settlement</h1>
+
+  <div id="stats">
+    <p><strong>Character:</strong> <span id="charName"></span></p>
+    <p>Health: <span id="health"></span></p>
+    <p>Stamina: <span id="stamina"></span></p>
+    <p>Attack: <span id="attack"></span></p>
+    <p>Defense: <span id="defense"></span></p>
+  </div>
+
+  <div id="actions">
+    <button onclick="train()">Train</button>
+    <button onclick="explore()">Explore Mountains</button>
+    <button onclick="rest()">Rest</button>
+  </div>
+
+  <div id="log"></div>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
