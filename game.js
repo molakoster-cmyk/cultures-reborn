@@ -1,156 +1,125 @@
-// ===============================
-// GAME STATE
-// ===============================
-let gameState = "settlement"; // settlement | combat
-
-// ===============================
-// PLAYER
-// ===============================
 let player = {
   name: "Mountain Warrior",
   health: 100,
+  maxHealth: 100,
   stamina: 100,
   attack: 10,
   defense: 8
 };
 
-// ===============================
-// ENEMY
-// ===============================
-let currentEnemy = null;
+let enemy = null;
+let inCombat = false;
 
-// ===============================
-// UI FUNCTIONS
-// ===============================
+function log(text) {
+  document.getElementById("log").innerHTML = text;
+}
+
 function updateUI() {
   document.getElementById("charName").textContent = player.name;
   document.getElementById("health").textContent = player.health;
   document.getElementById("stamina").textContent = player.stamina;
   document.getElementById("attack").textContent = player.attack;
   document.getElementById("defense").textContent = player.defense;
+
+  document.getElementById("healthBar").style.width =
+    (player.health / player.maxHealth) * 100 + "%";
+
+  if (enemy) {
+    document.getElementById("enemyName").textContent = enemy.name;
+    document.getElementById("enemyHealth").textContent = enemy.health;
+    document.getElementById("enemyHealthBar").style.width =
+      (enemy.health / enemy.maxHealth) * 100 + "%";
+  }
 }
 
-function log(text) {
-  const logBox = document.getElementById("log");
-  logBox.innerHTML += text + "<br>";
-  logBox.scrollTop = logBox.scrollHeight;
-}
-
-// ===============================
-// SETTLEMENT ACTIONS
-// ===============================
 function train() {
-  if (gameState !== "settlement") {
-    log("You cannot train during combat.");
-    return;
-  }
-
-  if (player.stamina < 10) {
-    log("Too tired to train.");
-    return;
-  }
+  if (inCombat) return log("You cannot train during combat.");
+  if (player.stamina < 10) return log("Too tired to train.");
 
   player.stamina -= 10;
   player.attack += 1;
   log("You train with heavy stone weapons. Attack increased.");
-
   updateUI();
 }
 
 function rest() {
-  if (gameState !== "settlement") {
-    log("You cannot rest during combat.");
-    return;
-  }
+  if (inCombat) return log("You cannot rest during combat.");
 
-  player.stamina = Math.min(100, player.stamina + 20);
-  player.health = Math.min(100, player.health + 10);
-
+  player.stamina = Math.min(100, player.stamina + 25);
+  player.health = Math.min(player.maxHealth, player.health + 15);
   log("You rest inside the mountain halls.");
-
   updateUI();
 }
 
-// ===============================
-// EXPLORATION
-// ===============================
 function explore() {
-  if (gameState !== "settlement") {
-    log("You are already facing danger.");
-    return;
-  }
-
-  if (player.stamina < 15) {
-    log("Not enough stamina to explore.");
-    return;
-  }
+  if (inCombat) return log("You are already facing danger.");
+  if (player.stamina < 15) return log("Not enough stamina to explore.");
 
   player.stamina -= 15;
 
-  currentEnemy = {
+  enemy = {
     name: "Mountain Beast",
-    health: 40,
+    health: 50,
+    maxHealth: 50,
     attack: 8,
-    defense: 5
+    defense: 4
   };
 
-  gameState = "combat";
+  inCombat = true;
+  document.getElementById("enemyBox").classList.remove("hidden");
+  document.getElementById("combatActions").classList.remove("hidden");
+
   log("⚔️ A Mountain Beast emerges from the rocks!");
+  updateUI();
+}
+
+function attackEnemy() {
+  let damageToEnemy = Math.max(1, player.attack - enemy.defense);
+  let damageToPlayer = Math.max(0, enemy.attack - player.defense);
+
+  enemy.health -= damageToEnemy;
+  player.health -= damageToPlayer;
+
+  log(`You strike for ${damageToEnemy} damage. The beast hits you for ${damageToPlayer}.`);
+
+  if (enemy.health <= 0) {
+    endCombat("You defeated the Mountain Beast!");
+  } else if (player.health <= 0) {
+    player.health = 30;
+    endCombat("You collapse and barely escape with your life.");
+  }
 
   updateUI();
 }
 
-// ===============================
-// COMBAT
-// ===============================
-function attackEnemy() {
-  if (gameState !== "combat" || !currentEnemy) {
-    log("There is nothing to attack.");
-    return;
-  }
+function defend() {
+  let reduced = Math.max(0, enemy.attack - (player.defense * 2));
+  player.health -= reduced;
 
-  let damageToEnemy = Math.max(1, player.attack - currentEnemy.defense);
-  let damageToPlayer = Math.max(1, currentEnemy.attack - player.defense);
-
-  currentEnemy.health -= damageToEnemy;
-  player.health -= damageToPlayer;
-
-  log(`You strike the ${currentEnemy.name} for ${damageToEnemy} damage.`);
-  log(`The ${currentEnemy.name} hits you for ${damageToPlayer} damage.`);
-
-  if (currentEnemy.health <= 0) {
-    log(`🏆 You have slain the ${currentEnemy.name}!`);
-    currentEnemy = null;
-    gameState = "settlement";
-  }
-
-  if (player.health <= 0) {
-    log("💀 You collapse and are dragged back to the settlement.");
-    player.health = 50;
-    currentEnemy = null;
-    gameState = "settlement";
-  }
-
+  log(`You defend. The beast deals ${reduced} damage.`);
   updateUI();
 }
 
 function retreat() {
-  if (gameState !== "combat") {
-    log("You are not in combat.");
-    return;
+  if (Math.random() < 0.6) {
+    endCombat("You successfully retreat into the mountains.");
+  } else {
+    let hit = enemy.attack;
+    player.health -= hit;
+    log(`Retreat failed! You take ${hit} damage.`);
+    updateUI();
   }
+}
 
-  log("You retreat back to the settlement, wounded but alive.");
-  player.stamina = Math.max(0, player.stamina - 10);
+function endCombat(message) {
+  inCombat = false;
+  enemy = null;
 
-  currentEnemy = null;
-  gameState = "settlement";
+  document.getElementById("enemyBox").classList.add("hidden");
+  document.getElementById("combatActions").classList.add("hidden");
 
+  log(message);
   updateUI();
 }
 
-// ===============================
-// INIT
-// ===============================
 updateUI();
-log("🏔️ The Mountain Folk settlement stands firm among the peaks.");
