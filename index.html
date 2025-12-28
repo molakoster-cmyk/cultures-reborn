@@ -1,27 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Cultures: Reborn</title>
+  <meta charset="UTF-8" />
+  <title>Cultures Reborn</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div id="game">
-  <h1>Mountain Folk Settlement</h1>
+  <h1>🏔 Mountain Folk Settlement</h1>
 
   <div id="stats">
     <p><strong>Character:</strong> <span id="charName"></span></p>
-    <p>Health: <span id="health"></span></p>
-    <p>Stamina: <span id="stamina"></span></p>
-    <p>Attack: <span id="attack"></span></p>
-    <p>Defense: <span id="defense"></span></p>
+    <p>❤️ Health: <span id="health"></span></p>
+    <div class="bar">
+      <div id="healthBar"></div>
+    </div>
+
+    <p>⚡ Stamina: <span id="stamina"></span></p>
+    <p>🗡 Attack: <span id="attack"></span></p>
+    <p>🛡 Defense: <span id="defense"></span></p>
+  </div>
+
+  <div id="enemyBox" class="hidden">
+    <h2 id="enemyName"></h2>
+    <p>❤️ Enemy HP: <span id="enemyHealth"></span></p>
+    <div class="bar">
+      <div id="enemyHealthBar"></div>
+    </div>
   </div>
 
   <div id="actions">
     <button onclick="train()">Train</button>
     <button onclick="explore()">Explore Mountains</button>
     <button onclick="rest()">Rest</button>
+  </div>
+
+  <div id="combatActions" class="hidden">
+    <button onclick="attackEnemy()">Attack</button>
+    <button onclick="defend()">Defend</button>
+    <button onclick="retreat()">Retreat</button>
   </div>
 
   <div id="log"></div>
