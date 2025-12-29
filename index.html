@@ -8,43 +8,53 @@
 <body>
 
 <div id="game">
-  <h1>🏔 Mountain Folk Settlement</h1>
 
-  <div id="stats">
-    <p><strong>Character:</strong> <span id="charName"></span></p>
-    <p>❤️ Health: <span id="health"></span></p>
-    <div class="bar">
-      <div id="healthBar"></div>
-    </div>
+  <h1>⛰️ Mountain Folk Settlement</h1>
 
-    <p>⚡ Stamina: <span id="stamina"></span></p>
-    <p>🗡 Attack: <span id="attack"></span></p>
-    <p>🛡 Defense: <span id="defense"></span></p>
-  </div>
+  <section class="panel">
+    <h2>Character</h2>
+    ❤️ Health: <span id="health"></span>
+    <div class="bar"><div id="healthBar"></div></div>
 
-  <div id="enemyBox" class="hidden">
-    <h2 id="enemyName"></h2>
-    <p>❤️ Enemy HP: <span id="enemyHealth"></span></p>
-    <div class="bar">
-      <div id="enemyHealthBar"></div>
-    </div>
-  </div>
+    ⚡ Stamina: <span id="stamina"></span>
+    🗡 Attack: <span id="attack"></span>
+    🛡 Defense: <span id="defense"></span>
+  </section>
 
-  <div id="actions">
+  <section class="panel">
+    <h2>Settlement</h2>
+    👥 Population: <span id="pop"></span> |
+    🧑‍🏭 Free Workers: <span id="workers"></span><br>
+    🌲 Wood: <span id="wood"></span>
+    🪨 Stone: <span id="stone"></span>
+    🍖 Food: <span id="food"></span>
+  </section>
+
+  <section class="panel">
+    <h2>Actions</h2>
     <button onclick="train()">Train</button>
-    <button onclick="explore()">Explore Mountains</button>
+    <button onclick="explore()">Explore</button>
     <button onclick="rest()">Rest</button>
-  </div>
+  </section>
 
-  <div id="combatActions" class="hidden">
+  <section class="panel" id="combatPanel" style="display:none;">
+    <h2>⚔️ Combat</h2>
+    🐺 Enemy HP: <span id="enemyHp"></span>
+    <div class="bar red"><div id="enemyBar"></div></div>
+
     <button onclick="attackEnemy()">Attack</button>
     <button onclick="defend()">Defend</button>
     <button onclick="retreat()">Retreat</button>
-  </div>
+  </section>
 
-  <div id="log"></div>
+  <section class="panel">
+    <h2>Log</h2>
+    <div id="log"></div>
+  </section>
+
 </div>
 
+<script src="data.js"></script>
 <script src="game.js"></script>
 </body>
 </html>
