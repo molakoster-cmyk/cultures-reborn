@@ -1,60 +1,60 @@
 body {
-  background: linear-gradient(180deg, #0f172a, #020617);
-  color: #e5e7eb;
-  font-family: serif;
-  display: flex;
-  justify-content: center;
-  padding: 30px;
+  margin: 0;
+  font-family: Georgia, serif;
+  background: radial-gradient(circle at top, #1b2a3a, #060b13);
+  color: #eee;
 }
 
 #game {
-  width: 380px;
-  background: rgba(15, 23, 42, 0.9);
+  max-width: 420px;
+  margin: auto;
   padding: 20px;
-  border-radius: 12px;
 }
 
 h1, h2 {
   text-align: center;
 }
 
+.panel {
+  background: rgba(0,0,0,0.5);
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+}
+
 button {
-  background: #334155;
+  width: 100%;
+  padding: 8px;
+  margin: 4px 0;
+  background: #2f3f55;
   color: white;
   border: none;
-  padding: 8px 12px;
-  margin: 5px;
   border-radius: 6px;
-  cursor: pointer;
 }
 
 button:hover {
-  background: #475569;
+  background: #415a77;
 }
 
 .bar {
-  background: #1e293b;
+  background: #333;
   height: 10px;
   border-radius: 5px;
   overflow: hidden;
-  margin-bottom: 10px;
+  margin: 4px 0;
 }
 
-#healthBar, #enemyHealthBar {
+.bar div {
   height: 100%;
-  background: #22c55e;
+  background: #3cb371;
   width: 100%;
 }
 
-#enemyHealthBar {
-  background: #ef4444;
-}
-
-.hidden {
-  display: none;
+.bar.red div {
+  background: #c0392b;
 }
 
 #log {
-  margin-top: 15px;
   font-size: 14px;
+  line-height: 1.4;
 }
