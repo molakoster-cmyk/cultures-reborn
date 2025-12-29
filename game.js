@@ -1,124 +1,124 @@
 let player = {
-  name: "Mountain Warrior",
   health: 100,
-  maxHealth: 100,
   stamina: 100,
   attack: 10,
   defense: 8
 };
 
+let settlement = {
+  pop: 5,
+  workers: 3,
+  wood: 20,
+  stone: 10,
+  food: 20
+};
+
 let enemy = null;
-let inCombat = false;
+let defending = false;
 
 function log(text) {
-  document.getElementById("log").innerHTML = text;
+  document.getElementById("log").innerHTML += text + "<br>";
 }
 
 function updateUI() {
-  document.getElementById("charName").textContent = player.name;
-  document.getElementById("health").textContent = player.health;
-  document.getElementById("stamina").textContent = player.stamina;
-  document.getElementById("attack").textContent = player.attack;
-  document.getElementById("defense").textContent = player.defense;
+  health.textContent = player.health;
+  stamina.textContent = player.stamina;
+  attack.textContent = player.attack;
+  defense.textContent = player.defense;
 
-  document.getElementById("healthBar").style.width =
-    (player.health / player.maxHealth) * 100 + "%";
+  healthBar.style.width = player.health + "%";
+
+  pop.textContent = settlement.pop;
+  workers.textContent = settlement.workers;
+  wood.textContent = settlement.wood;
+  stone.textContent = settlement.stone;
+  food.textContent = settlement.food;
 
   if (enemy) {
-    document.getElementById("enemyName").textContent = enemy.name;
-    document.getElementById("enemyHealth").textContent = enemy.health;
-    document.getElementById("enemyHealthBar").style.width =
-      (enemy.health / enemy.maxHealth) * 100 + "%";
+    combatPanel.style.display = "block";
+    enemyHp.textContent = enemy.hp;
+    enemyBar.style.width = (enemy.hp / enemy.maxHp) * 100 + "%";
+  } else {
+    combatPanel.style.display = "none";
   }
 }
 
 function train() {
-  if (inCombat) return log("You cannot train during combat.");
-  if (player.stamina < 10) return log("Too tired to train.");
-
-  player.stamina -= 10;
+  if (settlement.food < 5) return log("Not enough food.");
+  settlement.food -= 5;
   player.attack += 1;
-  log("You train with heavy stone weapons. Attack increased.");
+  log("You train warriors. Attack +1.");
   updateUI();
 }
 
 function rest() {
-  if (inCombat) return log("You cannot rest during combat.");
-
-  player.stamina = Math.min(100, player.stamina + 25);
-  player.health = Math.min(player.maxHealth, player.health + 15);
-  log("You rest inside the mountain halls.");
+  player.stamina = Math.min(100, player.stamina + 30);
+  player.health = Math.min(100, player.health + 20);
+  settlement.food -= 2;
+  log("You rest in the longhouse.");
   updateUI();
 }
 
 function explore() {
-  if (inCombat) return log("You are already facing danger.");
-  if (player.stamina < 15) return log("Not enough stamina to explore.");
+  if (enemy) return log("You are already in combat!");
+  if (player.stamina < 10) return log("Too tired to explore.");
 
-  player.stamina -= 15;
+  player.stamina -= 10;
 
-  enemy = {
-    name: "Mountain Beast",
-    health: 50,
-    maxHealth: 50,
-    attack: 8,
-    defense: 4
-  };
-
-  inCombat = true;
-  document.getElementById("enemyBox").classList.remove("hidden");
-  document.getElementById("combatActions").classList.remove("hidden");
-
-  log("⚔️ A Mountain Beast emerges from the rocks!");
+  if (Math.random() < 0.6) {
+    enemy = {
+      hp: 30,
+      maxHp: 30,
+      attack: 10,
+      defense: 5
+    };
+    log("🐺 A mountain beast attacks!");
+  } else {
+    settlement.wood += 5;
+    settlement.stone += 3;
+    log("You gather resources in the wilds.");
+  }
   updateUI();
 }
 
 function attackEnemy() {
-  let damageToEnemy = Math.max(1, player.attack - enemy.defense);
-  let damageToPlayer = Math.max(0, enemy.attack - player.defense);
+  if (!enemy) return;
 
-  enemy.health -= damageToEnemy;
-  player.health -= damageToPlayer;
+  let dmgToEnemy = Math.max(1, player.attack - enemy.defense);
+  let dmgToPlayer = Math.max(1, enemy.attack - (defending ? player.defense * 2 : player.defense));
 
-  log(`You strike for ${damageToEnemy} damage. The beast hits you for ${damageToPlayer}.`);
+  enemy.hp -= dmgToEnemy;
+  player.health -= dmgToPlayer;
+  defending = false;
 
-  if (enemy.health <= 0) {
-    endCombat("You defeated the Mountain Beast!");
-  } else if (player.health <= 0) {
-    player.health = 30;
-    endCombat("You collapse and barely escape with your life.");
+  log(`You deal ${dmgToEnemy}. Enemy hits you for ${dmgToPlayer}.`);
+
+  if (enemy.hp <= 0) {
+    let loot = randomLoot();
+    if (loot.attack) player.attack += loot.attack;
+    if (loot.defense) player.defense += loot.defense;
+    log(`Enemy defeated! Looted ${loot.name}.`);
+    enemy = null;
+  }
+
+  if (player.health <= 0) {
+    log("You fall in battle and lose supplies.");
+    player.health = 50;
+    settlement.food = Math.max(0, settlement.food - 10);
+    enemy = null;
   }
 
   updateUI();
 }
 
 function defend() {
-  let reduced = Math.max(0, enemy.attack - (player.defense * 2));
-  player.health -= reduced;
-
-  log(`You defend. The beast deals ${reduced} damage.`);
-  updateUI();
+  defending = true;
+  log("You brace for impact.");
 }
 
 function retreat() {
-  if (Math.random() < 0.6) {
-    endCombat("You successfully retreat into the mountains.");
-  } else {
-    let hit = enemy.attack;
-    player.health -= hit;
-    log(`Retreat failed! You take ${hit} damage.`);
-    updateUI();
-  }
-}
-
-function endCombat(message) {
-  inCombat = false;
+  log("You retreat to the settlement.");
   enemy = null;
-
-  document.getElementById("enemyBox").classList.add("hidden");
-  document.getElementById("combatActions").classList.add("hidden");
-
-  log(message);
   updateUI();
 }
 
